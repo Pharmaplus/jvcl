@@ -1624,8 +1624,15 @@ end;
 
 procedure TJvCustomEditor.ClipboardCopy;
 begin
-  Clipboard.AsText := GetSelText;
-  SetClipboardBlockFormat(SelBlockFormat);
+  // Set both clipboard formats with one clipboard lock, otherwise clipboard viewers may have
+  // a hard time and even mess up the clipboard content (like mRemote).
+  Clipboard.Open;
+  try
+    Clipboard.AsText := GetSelText;
+    SetClipboardBlockFormat(SelBlockFormat);
+  finally
+    Clipboard.Close;
+  end;
 end;
 
 procedure TJvCustomEditor.InsertText(const Text: string);
@@ -2714,16 +2721,26 @@ var
     Result := -1;
   end;
 
+var
+  iBeg, iEnd: Integer;
+  Ed: TJvCustomEditor;
 begin
-  with TJvCustomEditor(JvEditor) do
-    if FLines.Count > 0 then
-      S := GetWordOnPos(FLines[CaretY], CaretX)
-    else
-      S := '';
+  Ed := TJvCustomEditor(JvEditor);
+  if Ed.FLines.Count > 0 then
+    S := GetWordOnPos2(Ed.FLines[Ed.CaretY], Ed.CaretX, iBeg, iEnd)
+  else
+    S := '';
   if Trim(S) = '' then
     ItemIndex := -1
   else
+  begin
     ItemIndex := FindFirst(Items, S);
+    if (ItemIndex = -1) and (Ed.FLines.Count > 0) then
+    begin
+      S := Copy(S, 1, ed.CaretX - iBeg + 1);
+      ItemIndex := FindFirst(Items, S);
+    end;
+  end;
   Eq := (ItemIndex > -1) and SameText(Trim(SubStrBySeparator(Items[ItemIndex], 0, FSeparator)), S);
 end;
 

@@ -357,7 +357,11 @@ begin
     ComboText := Name
   else
   if FDataLink <> nil then
-    FDataLink.UpdateRecord
+  begin
+    FDataLink.UpdateRecord;
+    if (FDataLink.DataSource <> nil) and not FDataLink.DataSource.Enabled then
+      ComboText := '';
+  end
   else
     ComboText := '';
 end;
@@ -997,7 +1001,6 @@ begin
     FListDataLink.DataSource := Value;
     if DataSource <> nil then
       DataSource.FreeNotification(ComboBox);
-    ComboBox.UpdateDropDownItems;
   end;
 end;
 

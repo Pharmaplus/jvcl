@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
-  BDSVersions: array[1..15] of record
+  BDSVersions: array[1..16] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -57,7 +57,8 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE5'; Version: 19; CIV: '190'; Supported: True),
     (Name: 'skipped'; VersionStr: 'skipped'; Version: 19; CIV: '190'; Supported: False),
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; CIV: '200'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; CIV: '210'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; CIV: '210'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE8'; Version: 22; CIV: '220'; Supported: True)
   );
 
 type
@@ -179,6 +180,7 @@ type
     function GetDcc64: string;
     function GetDccil: string;
     function GetBcc32: string;
+    function GetBcc64: string;
     function GetIlink32: string;
     function GetTlib: string;
     function GetBplDir: string;
@@ -244,6 +246,7 @@ type
     property Dcc64: string read GetDcc64;
     property Dccil: string read GetDccil;
     property Bcc32: string read GetBcc32;
+    property Bcc64: string read GetBcc64;
     property Ilink32: string read GetIlink32;
     property Tlib: string read GetTlib;
 
@@ -1347,8 +1350,8 @@ begin
     Result := SupportedPersonalities = Personalities
   else
     Result := SupportedPersonalities * Personalities = Personalities;
-  // there is no C++ Win64 personality yet
-  if (Personalities = [persBCB]) and IsBDS and (IDEVersion >= 9) and (FPlatform = ctpWin64) then
+  // C++ Win64 personality appeared with XE3
+  if (Personalities = [persBCB]) and IsBDS and (IDEVersion >= 9) and (IDEVersion < 11) and (FPlatform = ctpWin64) then
     Result := False;
 end;
 
@@ -1402,6 +1405,11 @@ end;
 function TCompileTarget.GetBcc32: string;
 begin
   Result := RootDir + '\Bin\bcc32.exe'; // do not localize
+end;
+
+function TCompileTarget.GetBcc64: string;
+begin
+  Result := RootDir + '\Bin\bcc64.exe'; // do not localize
 end;
 
 function TCompileTarget.GetIlink32: string;
