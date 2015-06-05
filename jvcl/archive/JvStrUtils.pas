@@ -43,10 +43,10 @@ type
 
   { ** Common string handling routines ** }
 
-function StrToOem(const AnsiStr: string): string;
+function StrToOem(const AnsiStr: AnsiString): AnsiString;
 { StrToOem translates a string from the Windows character set into the
   OEM character set. }
-function OemToAnsiStr(const OemStr: string): string;
+function OemToAnsiStr(const OemStr: AnsiString): AnsiString;
 { OemToAnsiStr translates a string from the OEM character set into the
   Windows character set. }
 function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
@@ -196,23 +196,23 @@ uses
   WinTypes, WinProcs;
 {$ENDIF}
 
-function StrToOem(const AnsiStr: string): string;
+function StrToOem(const AnsiStr: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(AnsiStr));
   if Length(Result) > 0 then
     {$IFDEF WIN32}
-    CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
+    CharToOemBuffA(PAnsiChar(AnsiStr), PAnsiChar(Result), Length(Result));
   {$ELSE}
     AnsiToOemBuff(@AnsiStr[1], @Result[1], Length(Result));
   {$ENDIF}
 end;
 
-function OemToAnsiStr(const OemStr: string): string;
+function OemToAnsiStr(const OemStr: AnsiString): AnsiString;
 begin
   SetLength(Result, Length(OemStr));
   if Length(Result) > 0 then
     {$IFDEF WIN32}
-    OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
+    OemToCharBuffA(PAnsiChar(OemStr), PAnsiChar(Result), Length(Result));
   {$ELSE}
     OemToAnsiBuff(@OemStr[1], @Result[1], Length(Result));
   {$ENDIF}
@@ -1080,7 +1080,7 @@ begin
   Result := Src;
   if Length(Key) > 0 then
     for I := 1 to Length(Src) do
-      Result[I] := Chr(Byte(Key[1 + ((I - 1) mod Length(Key))]) xor Ord(Src[I]));
+      Result[I] := AnsiChar(Byte(Key[1 + ((I - 1) mod Length(Key))]) xor Ord(Src[I]));
 end;
 
 function XorEncode(const Key, Source: string): string;

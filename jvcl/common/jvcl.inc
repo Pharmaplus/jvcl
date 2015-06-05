@@ -238,7 +238,7 @@ ALERT_jedi_inc_incompatible
 {-----------------------------------------------------------------------------}
 {$IFDEF BCB21}
  {$IFDEF CPUX86}
- {$I jvcld21win32.inc} // same include file for BDS based C++
+ {$I jvcld21.inc} // same include file for BDS based C++
  {$ENDIF CPUX86}
  {$IFDEF CPUX64}
  {$I jvcld21_x64.inc}

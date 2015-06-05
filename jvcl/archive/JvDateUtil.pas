@@ -108,7 +108,7 @@ uses
 {$IFDEF WIN32}
   Windows,
 {$ENDIF}
-  SysUtils, Consts,
+  SysUtils, Vcl.Consts,
   JvStrUtils;
 
 function IsLeapYear(AYear: Integer): Boolean;
@@ -489,13 +489,13 @@ begin
   D := 0;
   DateOrder := GetDateOrder(DateFormat);
 {$IFDEF COMPILER3_UP}
-  if ShortDateFormat[1] = 'g' then { skip over prefix text }
+  if System.SysUtils.FormatSettings.ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
 {$ENDIF COMPILER3_UP}
-  if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
+  if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, System.SysUtils.FormatSettings.DateSeparator) and
     ScanNumber(S, MaxInt, Pos, N2)) then
     Exit;
-  if ScanChar(S, Pos, DateSeparator) then
+  if ScanChar(S, Pos, System.SysUtils.FormatSettings.DateSeparator) then
   begin
     if not ScanNumber(S, MaxInt, Pos, N3) then
       Exit;
@@ -535,12 +535,12 @@ begin
       D := N2;
     end;
   end;
-  ScanChar(S, Pos, DateSeparator);
+  ScanChar(S, Pos, System.SysUtils.FormatSettings.DateSeparator);
   ScanBlanks(S, Pos);
 {$IFDEF COMPILER3_UP}
-  if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
+  if SysLocale.FarEast and (System.Pos('ddd', System.SysUtils.FormatSettings.ShortDateFormat) <> 0) then
   begin { ignore trailing text }
-    if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
+    if System.SysUtils.FormatSettings.ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
       ScanToNumber(S, Pos)
     else { stop at time prefix }
       repeat
@@ -548,8 +548,8 @@ begin
           Inc(Pos);
         ScanBlanks(S, Pos);
       until (Pos > Length(S)) or
-        (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
-        (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
+        (AnsiCompareText(System.SysUtils.FormatSettings.TimeAMString, Copy(S, Pos, Length(System.SysUtils.FormatSettings.TimeAMString))) = 0) or
+        (AnsiCompareText(System.SysUtils.FormatSettings.TimePMString, Copy(S, Pos, Length(System.SysUtils.FormatSettings.TimePMString))) = 0);
   end;
 {$ENDIF COMPILER3_UP}
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
@@ -560,9 +560,9 @@ begin
   if Length(S) > 0 then
     for Result := 1 to 12 do
     begin
-      if (Length(LongMonthNames[Result]) > 0) and
+      if (Length(System.SysUtils.FormatSettings.LongMonthNames[Result]) > 0) and
         (AnsiCompareText(Copy(S, 1, MaxLen),
-        Copy(LongMonthNames[Result], 1, MaxLen)) = 0) then
+        Copy(System.SysUtils.FormatSettings.LongMonthNames[Result], 1, MaxLen)) = 0) then
         Exit;
     end;
   Result := 0;
@@ -656,7 +656,7 @@ end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 begin
-  if not InternalStrToDate(ShortDateFormat, S, Result) then
+  if not InternalStrToDate(System.SysUtils.FormatSettings.ShortDateFormat, S, Result) then
     Result := Trunc(Default);
 end;
 
@@ -670,7 +670,7 @@ function DefDateFormat(FourDigitYear: Boolean): string;
 begin
   if FourDigitYear then
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(System.SysUtils.FormatSettings.ShortDateFormat) of
       doMDY:
         Result := 'MM/DD/YYYY';
       doDMY:
@@ -681,7 +681,7 @@ begin
   end
   else
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(System.SysUtils.FormatSettings.ShortDateFormat) of
       doMDY:
         Result := 'MM/DD/YY';
       doDMY:
@@ -696,7 +696,7 @@ function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
 begin
   if FourDigitYear then
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(System.SysUtils.FormatSettings.ShortDateFormat) of
       doMDY, doDMY:
         Result := '!99/99/9999;1;';
       doYMD:
@@ -705,7 +705,7 @@ begin
   end
   else
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder(System.SysUtils.FormatSettings.ShortDateFormat) of
       doMDY, doDMY:
         Result := '!99/99/99;1;';
       doYMD:
@@ -757,7 +757,7 @@ end;
 
 {$IFDEF USE_FOUR_DIGIT_YEAR}
 initialization
-  FourDigitYear := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
+  FourDigitYear := Pos('YYYY', AnsiUpperCase(System.SysUtils.FormatSettings.ShortDateFormat)) > 0;
 {$ENDIF}
 end.
 
