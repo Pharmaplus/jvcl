@@ -35,8 +35,8 @@ unit JvFunctions;
 
 interface
 uses
-  Windows, Graphics, Classes, Messages, Controls,
-  ComCtrls, SysUtils, ShellApi, ImgList,
+  Windows, Vcl.Graphics, Classes, Messages, Vcl.Controls,
+  Vcl.ComCtrls, SysUtils, ShellApi, Vcl.ImgList,
   JvTypes;
 
 {$IFNDEF COMPILER6_UP}
@@ -312,13 +312,14 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 implementation
 
 uses
-  Forms, Registry, ExtCtrls,
+  Vcl.Forms, Registry, Vcl.ExtCtrls,
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF}
   MMSystem,
   ShlObj, CommCtrl,
   JclSysInfo,
+  JclAnsiStrings,
   JclStrings, JclGraphics;
 
 resourcestring
@@ -1347,7 +1348,7 @@ end;
 function CharIsMoney(const Ch: Char): Boolean;
 begin
   Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
-    (Pos(Ch, CurrencyString) > 0);
+    (Pos(Ch, System.SysUtils.FormatSettings.CurrencyString) > 0);
 end;
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
@@ -1466,7 +1467,7 @@ begin
   for I := 1 to Length(S) do
   begin
     Ch := S[I];
-    if (not CharIsNumber(Ch)) or (Ch = DecimalSeparator) then //Az
+    if (not CharIsNumber(Ch)) or (Ch = System.SysUtils.FormatSettings.DecimalSeparator) then //Az
     begin
       Result := False;
       Exit;
@@ -1487,7 +1488,7 @@ begin
     { allow digits, space, Currency symbol and one decimal dot }
     Ch := Ps[liLoop];
 
-    if Ch = DecimalSeparator then
+    if Ch = System.SysUtils.FormatSettings.DecimalSeparator then
     begin
       Inc(liDots);
       if liDots > 1 then
@@ -1585,12 +1586,12 @@ begin
   { use the StrReplace in stringfunctions -
   the one in JclStrings is badly broken and brings down the app }
 
-  for liLoop := Low(LongMonthNames) to High(LongMonthNames) do
-    Ps := LStrReplace(Ps, LongMonthNames[liLoop], IntToStr(liLoop), False);
+  for liLoop := Low(System.SysUtils.FormatSettings.LongMonthNames) to High(System.SysUtils.FormatSettings.LongMonthNames) do
+    Ps := LStrReplace(Ps, System.SysUtils.FormatSettings.LongMonthNames[liLoop], IntToStr(liLoop), False);
 
   { now that 'January' is gone, catch 'Jan' }
-  for liLoop := Low(ShortMonthNames) to High(ShortMonthNames) do
-    Ps := LStrReplace(Ps, ShortMonthNames[liLoop], IntToStr(liLoop), False);
+  for liLoop := Low(System.SysUtils.FormatSettings.ShortMonthNames) to High(System.SysUtils.FormatSettings.ShortMonthNames) do
+    Ps := LStrReplace(Ps, System.SysUtils.FormatSettings.ShortMonthNames[liLoop], IntToStr(liLoop), False);
 
   { remove redundant spaces }
   Ps := LStrReplace(Ps, AnsiSpace + AnsiSpace, AnsiSpace, False);

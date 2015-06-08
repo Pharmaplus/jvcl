@@ -40,7 +40,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
-  Messages, SysUtils, Classes, Consts, Controls {, JvComponent};
+  Messages, SysUtils, Classes, Vcl.Consts, Vcl.Controls {, JvComponent};
 
 procedure CopyFile(const FileName, DestName: string; ProgressControl: TControl);
 procedure CopyFileEx(const FileName, DestName: string;
@@ -105,7 +105,7 @@ uses
   {$IFDEF COMPILER5}
   FileCtrl,
   {$ENDIF}
-  ShellAPI, Forms,
+  ShellAPI, Vcl.Forms,
   JvDateUtil, JvVCLUtils, JvProgressUtils;
 
 {$IFDEF WIN32}
@@ -908,7 +908,7 @@ begin
         StrCat(FileDestPath, PChar('\' + DisplayName + LinkExt));
         ShellLink.SetPath(PChar(FileName));
         ShellLink.SetIconLocation(PChar(FileName), 0);
-        MultiByteToWideChar(CP_ACP, 0, FileDestPath, -1, FileNameW, MAX_PATH);
+        MultiByteToWideChar(CP_ACP, 0, PAnsiChar(AnsiString(FileDestPath)), -1, FileNameW, MAX_PATH);
         OleCheck(PersistFile.Save(FileNameW, True));
       finally
         {$IFDEF COMPILER3_UP}

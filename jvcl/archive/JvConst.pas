@@ -30,7 +30,7 @@ unit JvConst;
 interface
 
 uses
-  Controls;
+  Vcl.Controls;
 
 //const
 //  RX_VERSION = $0002004B;  { 2.75 }
@@ -90,7 +90,7 @@ implementation
 
 uses
   Windows,
-  Forms;
+  Vcl.Forms;
 
 {$R JvConst.res}
 

@@ -34,7 +34,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
-  Windows, Classes, Graphics, Forms, Controls, Dialogs;
+  Windows, Classes, Vcl.Graphics, Vcl.Forms, Vcl.Controls, Vcl.Dialogs;
 
 { Windows resources (bitmaps and icons) VCL-oriented routines }
 
@@ -359,7 +359,7 @@ type
 implementation
 
 uses
-  SysUtils, Messages, Consts, Math,
+  SysUtils, Messages, Vcl.Consts, Math,
   {$IFDEF COMPILER35_UP}
   SysConst,
   {$ENDIF}
@@ -2253,7 +2253,7 @@ begin
   begin
     Temp := Result[1];
     Temp := AnsiUpperCase(Temp);
-    Result[1] := Temp[1];
+    Result[1] := Char(Temp[1]);
   end;
 end;
 

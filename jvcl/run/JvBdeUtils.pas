@@ -238,7 +238,7 @@ uses
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JclAnsiStrings,
-  SysUtils, Registry, Forms, Controls, Dialogs, Math,
+  SysUtils, Registry, Vcl.Forms, Vcl.Controls, Vcl.Dialogs, Math,
   IniFiles, DBConsts, bdeconst, Variants, RTLConsts,
   JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
