@@ -473,7 +473,9 @@ type
 
 const
   LOCALE_SISO639LANGNAME = $59;    // Used by Lazarus software development tool
+  {$NODEFINE LOCALE_SISO639LANGNAME}
   LOCALE_SISO3166CTRYNAME = $5A;   // Used by Lazarus software development tool
+  {$NODEFINE LOCALE_SISO3166CTRYNAME }
 
 var
   DefaultInstance:TGnuGettextInstance;  /// Default instance of the main API for singlethreaded applications.
@@ -3086,7 +3088,7 @@ begin
     Inc(patchPosition, 2); // skip the jump
     patchPosition := pansiChar(Pointer(pointer(patchPosition)^)^);
   end;
-  offset:=integer(NewProc)-integer(pointer(patchPosition))-5;
+  offset:=pansiChar(NewProc)-pansiChar(pointer(patchPosition))-5;
 
   Patch[0] := ansichar($E9);
   Patch[1] := ansichar(offset and 255);
@@ -3107,7 +3109,7 @@ begin
   {$ifdef LINUX}
   pageSize:=sysconf (_SC_PAGE_SIZE);
   p:=pointer(PatchPosition);
-  p:=pointer((integer(p) + PAGESIZE-1) and not (PAGESIZE-1) - pageSize);
+  p:=pointer((pansichar(p) + PAGESIZE-1) and not (PAGESIZE-1) - pageSize);
   if mprotect (p, pageSize, PROT_READ + PROT_WRITE + PROT_EXEC) <> 0 then
     RaiseLastOSError;
   {$endif}
